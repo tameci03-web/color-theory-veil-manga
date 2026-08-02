@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veil — ตรรกะสี · คู่มือลงสีด้วยเฉด ไม่ใช่ด้วยน้ำหนัก</title>
+<meta name="description" content="คู่มือถอดตรรกะสีสไตล์ Veil: ลงเงาด้วยการหมุนเฉดสีแทนการลดค่าน้ำหนัก พร้อม Hue Lab โต้ตอบสดและปุ่ม Value Scope ทดสอบขาวดำ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Trirong:wght@300;400;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#17142B;
+  --bg-2:#1E1B38;
+  --panel:#211E3C;
+  --panel-2:#26234a;
+  --line:rgba(200,190,230,.12);
+  --line-2:rgba(245,212,196,.16);
+  --paper:#ECE6DF;
+  --muted:#948CB4;
+  --muted-2:#6E6790;
+  --coral:#F46036;
+  --peach:#F5D4C4;
+  --sky:#B9E4F0;
+  --mint:#BDF2DA;
+  --plum:#7B5C9E;
+
+  --serif:"Trirong","Noto Serif Thai",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans Thai","Noto Sans Thai","Sarabun",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono","Sarabun",ui-monospace,"SF Mono",Menlo,monospace;
+
+  --maxw:1080px;
+  --col:720px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--paper);
+  font-family:var(--sans);
+  font-weight:300;
+  font-size:17px;
+  line-height:1.8;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+
+/* ambient grain / glow */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(70% 55% at 82% -8%, rgba(244,96,54,.16), transparent 60%),
+    radial-gradient(60% 50% at 8% 4%, rgba(185,228,240,.10), transparent 55%),
+    radial-gradient(90% 70% at 50% 120%, rgba(123,92,158,.14), transparent 60%);
+}
+
+.stage{position:relative;z-index:1;transition:filter .6s cubic-bezier(.4,0,.2,1)}
+body.scope .stage{filter:saturate(0) contrast(1.02)}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+
+/* ---------- masthead ---------- */
+.mast{
+  position:sticky;top:0;z-index:40;
+  backdrop-filter:blur(14px);
+  background:linear-gradient(180deg,rgba(23,20,43,.92),rgba(23,20,43,.72));
+  border-bottom:1px solid var(--line);
+}
+.mast .row{
+  max-width:var(--maxw);margin:0 auto;padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.brand{display:flex;align-items:center;gap:13px;min-width:0}
+.brand .mark{
+  width:26px;height:26px;border-radius:50%;flex:none;
+  background:conic-gradient(from 0deg,#F46036,#F5D4C4,#BDF2DA,#B9E4F0,#7B5C9E,#F46036);
+  box-shadow:inset 0 0 0 5px var(--bg);
+}
+.brand .txt{display:flex;flex-direction:column;line-height:1.15;min-width:0}
+.brand .txt b{font-family:var(--serif);font-weight:600;font-size:16px;letter-spacing:.01em}
+.brand .txt small{font-family:var(--mono);font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+
+.scopebtn{
+  display:inline-flex;align-items:center;gap:10px;flex:none;
+  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--paper);background:var(--panel);
+  border:1px solid var(--line-2);border-radius:999px;
+  padding:9px 15px 9px 12px;cursor:pointer;
+  transition:background .2s,border-color .2s,color .2s;
+}
+.scopebtn:hover{background:var(--panel-2);border-color:rgba(245,212,196,.4)}
+.scopebtn:focus-visible{outline:2px solid var(--peach);outline-offset:3px}
+.scopebtn .sw{
+  width:26px;height:14px;border-radius:999px;flex:none;position:relative;
+  background:linear-gradient(90deg,var(--peach) 50%,var(--sky) 50%);
+  transition:background .3s;
+}
+.scopebtn .sw::after{
+  content:"";position:absolute;top:1px;left:1px;width:12px;height:12px;border-radius:50%;
+  background:var(--bg);transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+body.scope .scopebtn .sw{background:#cfcfcf}
+body.scope .scopebtn .sw::after{transform:translateX(12px)}
+.scopebtn kbd{
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+  border:1px solid var(--line);border-radius:3px;padding:1px 5px;margin-left:2px;
+}
+@media(max-width:640px){.scopebtn kbd{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:76px 0 40px;position:relative}
+.eyebrow{
+  font-family:var(--mono);font-size:12px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:22px;display:flex;align-items:center;gap:12px;
+}
+.eyebrow::before{content:"";width:34px;height:1px;background:var(--coral);opacity:.7}
+.hero h1{
+  font-family:var(--serif);font-weight:600;
+  font-size:clamp(42px,7.2vw,84px);line-height:1.08;letter-spacing:-.015em;
+  text-wrap:balance;margin-bottom:24px;
+}
+.hero h1 em{font-style:normal;color:var(--sky)}
+.lede{font-size:clamp(18px,2.2vw,21px);max-width:56ch;color:#D7CFE6;font-weight:300}
+
+/* ---------- interactive lab ---------- */
+.lab{
+  margin-top:52px;
+  display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:0;
+  border:1px solid var(--line-2);border-radius:14px;overflow:hidden;
+  background:linear-gradient(180deg,var(--panel),var(--bg-2));
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.8);
+}
+.lab .labhead{
+  grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 24px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
+}
+.lab .labhead .live{display:flex;align-items:center;gap:8px;color:var(--mint)}
+.lab .labhead .live i{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 0 rgba(189,242,218,.7);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(189,242,218,.5)}70%{box-shadow:0 0 0 8px rgba(189,242,218,0)}100%{box-shadow:0 0 0 0 rgba(189,242,218,0)}}
+
+.lab .left{padding:30px 24px 32px;display:flex;flex-direction:column;align-items:center;gap:22px}
+
+/* hue wheel */
+.wheel{position:relative;width:230px;height:230px;flex:none}
+.wheel .ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,
+    hsl(0 70% 62%),hsl(40 70% 62%),hsl(80 62% 60%),hsl(120 55% 58%),
+    hsl(160 55% 60%),hsl(190 60% 64%),hsl(220 62% 66%),hsl(260 55% 66%),
+    hsl(300 58% 66%),hsl(340 66% 64%),hsl(360 70% 62%));
+  -webkit-mask:radial-gradient(circle,transparent 60%,#000 61%);
+          mask:radial-gradient(circle,transparent 60%,#000 61%);
+  opacity:.9;
+}
+.wheel .core{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;pointer-events:none;
+}
+.wheel .core .big{font-family:var(--serif);font-size:52px;font-weight:300;line-height:1;color:var(--peach)}
+.wheel .core .cap{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.pin{position:absolute;inset:0;transition:transform .18s cubic-bezier(.4,0,.2,1)}
+.pin .dot{
+  position:absolute;top:2px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;
+  border:2px solid var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.5);
+}
+.pin.skin .dot{background:var(--peach)}
+.pin.shadow .dot{background:var(--sky)}
+
+/* swatch pair */
+.pair{display:flex;width:100%;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.pair div{flex:1;padding:20px 12px;text-align:center;transition:background .15s}
+.pair .sk{background:var(--peach);color:#6B3B2A}
+.pair .sh{background:var(--sky);color:#255A6B}
+.pair strong{display:block;font-family:var(--mono);font-size:14px;font-weight:500}
+.pair span{display:block;font-size:11.5px;margin-top:3px;opacity:.7}
+
+.slider{width:100%}
+.slider+.slider{margin-top:2px}
+.slider label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.slider label b{color:var(--paper);font-weight:500}
+.slider label #lightVal{color:var(--peach)}
+.slider label #hueVal{color:var(--sky)}
+
+/* presets */
+.presets{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px}
+.presets .ptitle{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);margin-right:2px}
+.presets button{
+  font-family:var(--sans);font-size:13px;font-weight:400;color:var(--paper);
+  background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:999px;
+  padding:6px 14px;cursor:pointer;transition:background .18s,border-color .18s,color .18s;
+}
+.presets button:hover{background:rgba(245,212,196,.1);border-color:rgba(245,212,196,.45)}
+.presets button.on{background:var(--peach);color:#5a2f20;border-color:var(--peach)}
+.presets button:focus-visible{outline:2px solid var(--peach);outline-offset:2px}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;
+  background:linear-gradient(90deg,hsl(0 60% 55%),hsl(60 55% 55%),hsl(140 45% 52%),hsl(190 55% 60%),hsl(250 50% 60%),hsl(320 55% 58%),hsl(360 60% 55%));
+  outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.5);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--bg);box-shadow:0 2px 8px rgba(0,0,0,.5);cursor:pointer}
+input[type=range]:focus-visible{outline:2px solid var(--peach);outline-offset:4px}
+
+/* readout column */
+.lab .right{border-left:1px solid var(--line);padding:26px 24px;display:flex;flex-direction:column;gap:2px;background:rgba(0,0,0,.14)}
+.stat{padding:15px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.stat .v{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--paper);font-variant-numeric:tabular-nums}
+.stat .v small{font-size:13px;color:var(--muted);font-weight:400}
+.stat.good .v{color:var(--mint)}
+.stat.warn .v{color:var(--coral)}
+.verdict{
+  margin-top:auto;padding-top:16px;font-size:13.5px;line-height:1.6;color:#CFC7DE;
+}
+.verdict b{color:var(--peach);font-weight:600}
+
+/* ---------- sections ---------- */
+main{position:relative}
+section{padding:78px 0;border-top:1px solid var(--line)}
+.chapter{
+  display:grid;grid-template-columns:120px minmax(0,1fr);gap:20px;
+}
+.chapter .idx{
+  font-family:var(--mono);font-size:12px;letter-spacing:.16em;color:var(--coral);
+  padding-top:6px;position:sticky;top:90px;align-self:start;height:max-content;
+}
+.chapter .idx .n{font-family:var(--serif);font-size:40px;font-weight:300;color:var(--paper);display:block;line-height:1;margin-bottom:8px}
+.chapter .body{max-width:var(--col)}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(27px,3.6vw,40px);line-height:1.24;letter-spacing:-.01em;text-wrap:balance;margin-bottom:20px}
+h3{font-family:var(--sans);font-weight:600;font-size:18px;margin:30px 0 9px;color:var(--peach)}
+p{max-width:64ch;margin-bottom:16px;color:#D7CFE6}
+strong{font-weight:600;color:#fff}
+.key{color:var(--sky);font-weight:600}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+/* metaphor cards */
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.meta article{border:1px solid var(--line-2);border-radius:10px;padding:24px;background:rgba(255,255,255,.02)}
+.meta h4{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:10px}
+.meta .no h4{color:#EDA08F}
+.meta .yes h4{color:var(--sky)}
+.meta p{font-size:15px;margin:0;color:#C6BEDA}
+.bar{display:flex;height:46px;margin-top:20px;border-radius:5px;overflow:hidden}
+.bar i{flex:1}
+.barcap{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);margin-top:8px;display:block}
+
+/* rules */
+.rules{margin-top:26px;display:flex;flex-direction:column;gap:2px}
+.rules li{
+  list-style:none;position:relative;padding:24px 0 24px 68px;border-top:1px solid var(--line);
+}
+.rules li:first-child{border-top:none}
+.rules li::before{
+  content:counter(r,decimal-leading-zero);counter-increment:r;
+  position:absolute;left:0;top:24px;
+  font-family:var(--mono);font-size:14px;color:var(--coral);
+  border:1px solid var(--line-2);border-radius:6px;padding:6px 9px;
+}
+.rules{counter-reset:r}
+.rules b{display:block;font-weight:600;font-size:19px;color:#fff;margin-bottom:6px}
+.rules span{color:#C6BEDA;font-size:16px}
+.rules code{font-family:var(--mono);font-size:.9em;background:rgba(185,228,240,.1);color:var(--sky);padding:1px 6px;border-radius:4px}
+
+/* process steps */
+.steps{margin-top:30px;counter-reset:s}
+.step{position:relative;padding:0 0 34px 30px;border-left:1px solid var(--line)}
+.step:last-child{padding-bottom:0}
+.step::before{
+  content:"";position:absolute;left:-5px;top:6px;width:9px;height:9px;border-radius:50%;
+  background:var(--coral);box-shadow:0 0 0 4px var(--bg);
+}
+.step h3{margin-top:0;display:flex;align-items:baseline;gap:10px}
+.step h3::before{counter-increment:s;content:counter(s);font-family:var(--mono);font-size:12px;color:var(--muted)}
+.step p{font-size:16px;color:#C6BEDA}
+.chip{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.04);border:1px solid var(--line-2);border-radius:6px;
+  padding:8px 13px;margin:8px 8px 0 0;font-family:var(--mono);font-size:13px;color:var(--paper);
+}
+.chip i{width:20px;height:20px;border-radius:4px;flex:none}
+.callout{
+  background:linear-gradient(90deg,rgba(244,96,54,.12),rgba(244,96,54,.03));
+  border-left:3px solid var(--coral);border-radius:0 8px 8px 0;padding:16px 20px;margin:22px 0 4px;
+}
+.callout p{margin:0;font-size:15.5px;color:#E9DFD6}
+
+/* table */
+.tablewrap{overflow-x:auto;margin-top:28px;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:15px;min-width:600px}
+th{
+  text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:400;padding:16px 18px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--line);
+}
+td{padding:16px 18px;border-bottom:1px solid var(--line);vertical-align:middle;color:#D7CFE6}
+tr:last-child td{border-bottom:none}
+td:first-child{font-weight:500;color:#fff}
+.sw{display:inline-block;width:32px;height:16px;border-radius:3px;margin-right:10px;vertical-align:-3px}
+
+/* mistakes ledger */
+.miss{display:grid;grid-template-columns:1fr 1.3fr;gap:22px;padding:22px 0;border-top:1px solid var(--line)}
+.miss:first-of-type{border-top:none}
+.miss dt{font-weight:600;color:#EDA08F;font-size:16px}
+.miss dd{color:#C6BEDA;font-size:15px}
+.miss dd .fix{color:var(--mint);font-weight:500}
+
+/* footer note */
+.note{padding:60px 0 100px;border-top:1px solid var(--line)}
+.note .inner{max-width:74ch;font-size:14.5px;color:var(--muted);line-height:1.8}
+.note b{color:var(--peach);font-weight:600}
+.note .sig{
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted-2);margin-top:28px;display:flex;align-items:center;gap:10px;
+}
+.note .sig::before{content:"";width:28px;height:1px;background:var(--muted-2)}
+
+@media(max-width:860px){
+  .lab{grid-template-columns:1fr}
+  .lab .right{border-left:none;border-top:1px solid var(--line)}
+}
+@media(max-width:680px){
+  body{font-size:16px}
+  .wrap,.mast .row{padding-left:22px;padding-right:22px}
+  .chapter{grid-template-columns:1fr;gap:0}
+  .chapter .idx{position:static;display:flex;align-items:baseline;gap:12px;padding-top:0;margin-bottom:14px}
+  .chapter .idx .n{font-size:30px;margin-bottom:0}
+  .meta,.miss{grid-template-columns:1fr}
+  .miss dt{margin-bottom:2px}
+  section{padding:56px 0}
+  .hero{padding:52px 0 30px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="row">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="txt">
+        <b>Veil</b>
+        <small>ตรรกะสี · Color Logic</small>
+      </span>
+    </div>
+    <button class="scopebtn" id="scope" aria-pressed="false">
+      <span class="sw" aria-hidden="true"></span>
+      <span id="scopelabel">Value Scope</span>
+      <kbd>G</kbd>
+    </button>
+  </div>
+</header>
+
+<div class="stage">
+<div class="wrap">
+
+  <section class="hero" style="border:none;padding-top:76px">
+    <span class="eyebrow">ถอดตรรกะสี · Veil Method</span>
+    <h1>เงาไม่ได้มืดลง<br>เงา<em>เปลี่ยนสี</em></h1>
+    <p class="lede">หลักเดียวที่ทำให้งานสไตล์นี้ต่างจากการลงเงาทั่วไป — และตรวจสอบได้ทันทีด้วยปุ่ม Value Scope มุมบนขวา</p>
+
+    <div class="lab" role="group" aria-label="แล็บทดลองเฉดสีเงา">
+      <div class="labhead">
+        <span>Hue Lab · หมุนเฉดของแสงและเงา</span>
+        <span class="live"><i aria-hidden="true"></i>Live</span>
+      </div>
+
+      <div class="left">
+        <div class="wheel" aria-hidden="true">
+          <div class="ring"></div>
+          <div class="pin skin" id="pinSkin"><span class="dot"></span></div>
+          <div class="pin shadow" id="pinShadow"><span class="dot"></span></div>
+          <div class="core"><span class="big" id="gapBig">174</span><span class="cap">องศาห่าง</span></div>
+        </div>
+
+        <div class="pair">
+          <div class="sk" id="skSwatch"><strong id="skinHex">#F5D4C4</strong><span>สีแสง</span></div>
+          <div class="sh" id="shSwatch"><strong id="shadowHex">#B9E4F0</strong><span>สีเงา</span></div>
+        </div>
+
+        <div class="slider">
+          <label>เฉดของแสง (Light&nbsp;H) <b id="lightVal">20°</b></label>
+          <input type="range" id="light" min="0" max="360" value="20" step="1" aria-label="เฉดสีของแสง">
+        </div>
+        <div class="slider">
+          <label>เฉดของเงา (Shadow&nbsp;H) <b id="hueVal">194°</b></label>
+          <input type="range" id="hue" min="0" max="360" value="194" step="1" aria-label="เฉดสีของเงา">
+        </div>
+
+        <div class="presets" role="group" aria-label="ฉากสำเร็จรูป">
+          <span class="ptitle">ลองฉาก</span>
+          <button type="button" data-l="20" data-s="194">เย็น</button>
+          <button type="button" data-l="52" data-s="168">ตะเกียง</button>
+          <button type="button" data-l="208" data-s="240">จันทร์</button>
+          <button type="button" data-l="104" data-s="262">นีออน</button>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="stat"><div class="k">ระยะเฉดสี ΔH</div><div class="v" id="dH">170<small>°</small></div></div>
+        <div class="stat good" id="dVstat"><div class="k">ต่างค่าน้ำหนัก ΔV</div><div class="v" id="dV">3<small>%</small></div></div>
+        <div class="stat"><div class="k">โทนอารมณ์</div><div class="v" id="mood" style="font-size:16px">ตึง / สั่นตา</div></div>
+        <p class="verdict" id="verdict"><b>ผ่าน</b> — ค่าน้ำหนักเกือบเท่ากัน ต่างกันแค่เฉด กด <b>Value Scope</b> แล้วสองช่องนี้จะกลืนเป็นเทาเดียว</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<main>
+<div class="wrap">
+
+  <section>
+    <div class="chapter rv">
+      <div class="idx"><span class="n">01</span>หลักการ</div>
+      <div class="body">
+        <h2>หรี่ไฟ กับ เปลี่ยนหลอดไฟ</h2>
+        <p>วิธีลงเงาที่เราคุ้นเคยคือการเอาสีเดิมมาทำให้มืดลง เหมือนหรี่ไฟ ส่วนวิธีของ Veil คือเปลี่ยนสีหลอดไฟ ความสว่างเท่าเดิมทุกประการ แต่สีเปลี่ยนไป</p>
+        <p>ผลคือทั้งภาพสว่างเสมอกันหมด สิ่งที่บอกสายตาว่า “ตรงนี้คือเงา” จึงไม่ใช่ความมืด แต่คือ<span class="key">การที่สีเลื่อนไปอีกตระกูลหนึ่ง</span></p>
+
+        <div class="meta">
+          <article class="no">
+            <h4>หรี่ไฟ</h4>
+            <p>ลดค่าความสว่างของสีเดิม สีจะขุ่นและจืดลงเรื่อย ๆ พอแปลงเป็นขาวดำภาพยังอ่านเป็นรูปทรงชัดเจน</p>
+            <div class="bar"><i style="background:#F5D4C4"></i><i style="background:#D8B09C"></i><i style="background:#B58C78"></i><i style="background:#8E6A57"></i></div>
+            <span class="barcap">Value ไล่ลง — ขาวดำยังอ่านออก</span>
+          </article>
+          <article class="yes">
+            <h4>เปลี่ยนหลอดไฟ</h4>
+            <p>คงความสว่างไว้ หมุนเฉดสีไปทางเย็นแทน สียังสดและสว่าง พอแปลงเป็นขาวดำภาพจะแบนเกือบเป็นแผ่นเดียว</p>
+            <div class="bar"><i style="background:#F5D4C4"></i><i style="background:#EBD9DC"></i><i style="background:#D5E2EE"></i><i style="background:#B9E4F0"></i></div>
+            <span class="barcap">Hue หมุน — ขาวดำแบนราบ</span>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter rv">
+      <div class="idx"><span class="n">02</span>กฎ</div>
+      <div class="body">
+        <h2>จำแค่สองประโยค</h2>
+        <ol class="rules">
+          <li>
+            <b>ล็อกค่าความสว่างไว้ ห้ามแตะ</b>
+            <span>ทุกสีที่จะลงบนตัวละครตั้ง <code>S 18–25</code> / <code>V 90–97</code> เสมอ เครื่องมือที่เหลือให้เล่นแค่ค่าเฉดสี (H) อย่างเดียว ความมืดทั้งหมดถูกผลักไปอยู่ที่พื้นหลังกับจุดเข้มเล็ก ๆ</span>
+          </li>
+          <li>
+            <b>เงาหนึ่งสี ใช้ทั้งฉาก</b>
+            <span>ผิว ผม เสื้อ มือ ใช้สีเงาตัวเดียวกันหมด ไม่ต้องหาเงาแยกของแต่ละชิ้น นี่คือสิ่งที่ทำให้ภาพเป็นเอกภาพ และเป็นข้อที่พลาดกันบ่อยที่สุดเพราะสัญชาตญาณจะสั่งให้ทำตรงข้าม</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter rv">
+      <div class="idx"><span class="n">03</span>ทำจริง</div>
+      <div class="body">
+        <h2>หนึ่งเคส: แดดเย็นส่องหน้าคน</h2>
+        <div class="steps">
+          <div class="step">
+            <h3>ถามก่อนว่าแสงสีอะไร</h3>
+            <p>แดดตอนเย็นคือส้มอุ่น กฎคือแสงอุ่นให้เงาเย็น — คำตอบนี้กำหนดทุกอย่างที่เหลือ</p>
+          </div>
+          <div class="step">
+            <h3>ตั้งสีผิวในแสง</h3>
+            <p>ผิวรับแสงส้ม จึงอยู่ในตระกูลส้ม แต่ต้องกดความอิ่มลงและดันความสว่างขึ้น</p>
+            <span class="chip"><i style="background:#F5D4C4"></i>H 20 · S 20 · V 96 → #F5D4C4</span>
+          </div>
+          <div class="step">
+            <h3>หาสีเงา หมุน H อย่างเดียว</h3>
+            <p>จาก 20° หมุนไปทางเย็นราว 170° ได้ 190° ส่วน S กับ V แทบไม่ขยับ</p>
+            <span class="chip"><i style="background:#B9E4F0"></i>H 190 · S 22 · V 93 → #B9E4F0</span>
+            <div class="callout"><p><strong>เช็คทันที:</strong> ผิว V 96 / เงา V 93 ต่างกัน 3% — ผ่าน ถ้าต่างเกิน 10% แปลว่าหลุดสไตล์แล้ว</p></div>
+          </div>
+          <div class="step">
+            <h3>ใช้เงาตัวนี้กับทุกชิ้น</h3>
+            <p>ผมก็ #B9E4F0 เสื้อก็ #B9E4F0 มือก็ #B9E4F0 ไม่มีวัตถุไหนมีเงาของตัวเอง</p>
+          </div>
+          <div class="step">
+            <h3>ทาเป็นรูปทรงแบน อย่าไล่เฉด</h3>
+            <p>ใช้แปรงที่มีเท็กซ์เจอร์ ป้ายเป็นชิ้นตามทิศแสง ปล่อยให้ขอบแตกและล้ำเส้นบ้าง ถ้าขอบเรียบกริบมันจะกลายเป็นการลงเงาแบบอนิเมะทันที และห้ามใช้โหมด Multiply เพราะมันจะลดทั้งความสว่างและความอิ่มสี</p>
+          </div>
+          <div class="step">
+            <h3>พื้นหลังกับจุดเข้ม</h3>
+            <p>ความมืดทั้งหมดของภาพอยู่ตรงนี้ที่เดียว พื้นหลังใช้สีเต็มความอิ่มได้ ส่วนจุดเข้มให้เหลือน้อยที่สุด — ปาก ตา และสีเส้น</p>
+            <span class="chip"><i style="background:#F46036"></i>พื้นหลัง #F46036</span>
+            <span class="chip"><i style="background:#2E294E"></i>จุดเข้ม #2E294E</span>
+          </div>
+          <div class="step">
+            <h3>เส้นไม่ใช่สีดำ</h3>
+            <p>เส้นดำสนิทจะลอยหลุดออกจากภาพ เลือกสีเข้มที่อยู่ในตระกูลของฉาก แล้วยอมให้บางช่วงเส้นหายเข้าไปในสี</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter rv">
+      <div class="idx"><span class="n">04</span>ขยายฉาก</div>
+      <div class="body">
+        <h2>วัดจากแสง ไม่ใช่จากวัตถุ</h2>
+        <p>กลางคืนไม่ได้แปลว่าทุกอย่างมืดลง แต่แปลว่าแสงเปลี่ยนอุณหภูมิ และพื้นหลังเปลี่ยนค่าน้ำหนัก ตัวละครยังสว่างเท่าเดิมเสมอ</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>ฉาก</th><th>แสงหลัก</th><th>เงาร่วมของฉาก</th><th>พื้นหลัง</th></tr></thead>
+            <tbody>
+              <tr><td>เย็น / พระอาทิตย์ตก</td><td><span class="sw" style="background:#F5D4C4"></span>พีช</td><td><span class="sw" style="background:#B9E4F0"></span>ฟ้าเทา</td><td>อุ่น สว่าง</td></tr>
+              <tr><td>กลางคืนในร่ม / ตะเกียง</td><td><span class="sw" style="background:#F2EBC4"></span>ครีมเหลือง</td><td><span class="sw" style="background:#9FD6CE"></span>เทียล</td><td>น้ำเงินเข้ม</td></tr>
+              <tr><td>กลางคืนกลางแจ้ง / จันทร์</td><td><span class="sw" style="background:#E2EEF7"></span>ฟ้าขาว</td><td><span class="sw" style="background:#BCC0E8"></span>น้ำเงินม่วง</td><td>กรมท่าเกือบดำ</td></tr>
+              <tr><td>ออฟฟิศ / ไฟนีออน</td><td><span class="sw" style="background:#E4F2E0"></span>ขาวอมเขียว</td><td><span class="sw" style="background:#CFC6DE"></span>ม่วงเทา</td><td>เทาจาง</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout"><p><strong>ระยะห่างของเฉดสี = ความตึงของอารมณ์</strong> ห่างกัน 160° ขึ้นไปจะสั่นตาและตึงเครียด ห่างราว 100–120° จะนุ่มและอยู่ในโลกเดียวกัน เลือกตามอารมณ์ของฉาก ไม่ใช่ตามความสวยของคู่สี — ลองปรับสไลเดอร์ด้านบนดูค่านี้ได้</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter rv">
+      <div class="idx"><span class="n">05</span>ตรวจงาน</div>
+      <div class="body">
+        <h2>มีเครื่องมือตรวจอยู่ชิ้นเดียว</h2>
+        <p>สร้าง <strong>New Correction Layer → Hue/Saturation/Luminosity</strong> ไว้บนสุด ลาก Saturation ลงไป −100 แล้วสลับซ่อน-แสดงเพื่อดูภาพขาวดำ</p>
+        <p>ถ้าภาพยังอ่านออกเป็นรูปทรงชัดเจน แปลว่ายังพึ่งค่าน้ำหนักอยู่ ถ้าตัวละครแบนจนเกือบเป็นแผ่นเทาแผ่นเดียว <span class="key">นั่นคือสัญญาณว่าทำถูก</span></p>
+        <p>กดปุ่ม <strong>Value Scope</strong> มุมบนขวาของหน้านี้ดู — แถบสีตัวอย่างทั้งหมดจะกลืนกันเกือบหมด นั่นคือสิ่งที่ควรเกิดขึ้นกับงานของคุณ</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter rv">
+      <div class="idx"><span class="n">06</span>แก้ปัญหา</div>
+      <div class="body">
+        <h2>อาการกับสาเหตุ</h2>
+        <dl>
+          <div class="miss"><dt>เงาขุ่น หม่น สีตาย</dt><dd>ใช้โหมด Multiply หรือลดค่าความสว่างอย่างเดียว <span class="fix">→ เปลี่ยนเป็นเลเยอร์ Normal แล้วเลือกสีเงาด้วยมือ</span></dd></div>
+          <div class="miss"><dt>ภาพดูเป็นสามมิติเกินไป</dt><dd>ไล่เฉดตามความโค้งของผิว <span class="fix">→ เปลี่ยนเงาเป็นรูปทรงแบนขอบชัดตามทิศแสง</span></dd></div>
+          <div class="miss"><dt>พาเลตดูสกปรก ไม่เป็นชุด</dt><dd>แต่ละวัตถุมีเงาของตัวเอง <span class="fix">→ ยุบเหลือสีเงาร่วมชุดเดียวทั้งฉาก</span></dd></div>
+          <div class="miss"><dt>เส้นลอยหลุดจากภาพ</dt><dd>เส้นยังดำสนิท <span class="fix">→ เปลี่ยนสีเส้นให้อยู่ในตระกูลของฉาก</span></dd></div>
+          <div class="miss"><dt>ขอบเงาแข็งเหมือนอนิเมะ</dt><dd>ใช้ Fill tool เทสีในเส้นปิด <span class="fix">→ ทาด้วยแปรงมีเท็กซ์เจอร์แทน ปล่อยขอบให้แตก</span></dd></div>
+          <div class="miss"><dt>เอาพาเลตสำเร็จรูปมาใช้แล้วไม่ได้ผล</dt><dd>พาเลตจากเว็บมักไล่ค่าน้ำหนักเป็นบันได <span class="fix">→ ยกทุกสีขึ้นมาที่ V 90+ ก่อน แล้วเก็บเฉดเดิมไว้</span></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <div class="note">
+    <div class="inner">
+      <p><b>หมายเหตุ</b> — Kotteri! ไม่เคยเผยแพร่ making-of ชุดแปรง ไฟล์งาน หรือให้สัมภาษณ์เรื่องเครื่องมือใด ๆ เลย แม้แต่ยังไม่เคยยืนยันว่างานเป็นดิจิทัลหรืออนาล็อก เอกสารนี้จึงเป็นการถอดวิธีคิดจากทฤษฎีสีที่ตรวจสอบได้ บวกกับการวิเคราะห์หน้างานที่ตีพิมพ์จริง ไม่ใช่กระบวนการที่ศิลปินยืนยัน</p>
+      <p style="margin-top:14px">เป้าหมายคือเข้าใจตรรกะเพื่อเอาไปใช้กับสไตล์ของตัวเอง ไม่ใช่ลอกลายเส้น</p>
+      <div class="sig">Veil Color Logic · คู่มือถอดตรรกะสี</div>
+    </div>
+  </div>
+
+</div>
+</main>
+</div>
+
+<script>
+(function(){
+  /* ---- value scope toggle ---- */
+  var body=document.body,btn=document.getElementById('scope'),lbl=document.getElementById('scopelabel');
+  function toggleScope(){
+    var on=body.classList.toggle('scope');
+    btn.setAttribute('aria-pressed',on);
+    lbl.textContent=on?'กลับเป็นสี':'Value Scope';
+  }
+  btn.addEventListener('click',toggleScope);
+  document.addEventListener('keydown',function(e){
+    if((e.key==='g'||e.key==='G')&&!/input|textarea/i.test(e.target.tagName)){toggleScope();}
+  });
+
+  /* ---- HSV -> hex ---- */
+  function hsv(h,s,v){
+    s/=100;v/=100;h=((h%360)+360)%360;
+    var c=v*s,x=c*(1-Math.abs((h/60)%2-1)),m=v-c,r=0,g=0,b=0;
+    if(h<60){r=c;g=x}else if(h<120){r=x;g=c}else if(h<180){g=c;b=x}
+    else if(h<240){g=x;b=c}else if(h<300){r=x;b=c}else{r=c;b=x}
+    function t(n){return ('0'+Math.round((n+m)*255).toString(16)).slice(-2)}
+    return '#'+t(r)+t(g)+t(b);
+  }
+  function arc(a,b){var d=Math.abs(a-b)%360;return d>180?360-d:d;}
+
+  /* light: S20 V96 · shadow: S22 V93 — value stays locked, only hue moves */
+  var light=document.getElementById('light'),hue=document.getElementById('hue'),
+      lightVal=document.getElementById('lightVal'),hueVal=document.getElementById('hueVal'),
+      skHex=document.getElementById('skinHex'),shHex=document.getElementById('shadowHex'),
+      skSwatch=document.getElementById('skSwatch'),shSwatch=document.getElementById('shSwatch'),
+      dH=document.getElementById('dH'),dV=document.getElementById('dV'),
+      dVstat=document.getElementById('dVstat'),mood=document.getElementById('mood'),
+      verdict=document.getElementById('verdict'),
+      pinShadow=document.getElementById('pinShadow'),pinSkin=document.getElementById('pinSkin'),
+      gapBig=document.getElementById('gapBig'),
+      presets=document.querySelectorAll('.presets button');
+
+  function render(){
+    var lh=+light.value,sh=+hue.value;
+    var lc=hsv(lh,20,96),sc=hsv(sh,22,93);
+    skHex.textContent=lc;skSwatch.style.background=lc;
+    shHex.textContent=sc;shSwatch.style.background=sc;
+    lightVal.textContent=lh+'°';hueVal.textContent=sh+'°';
+    pinSkin.style.transform='rotate('+lh+'deg)';
+    pinShadow.style.transform='rotate('+sh+'deg)';
+
+    var g=Math.round(arc(lh,sh));
+    dH.innerHTML=g+'<small>°</small>';
+    gapBig.textContent=g;
+    dV.innerHTML='3<small>%</small>';
+
+    var m;
+    if(g>=160){m='ตึง / สั่นตา';}
+    else if(g>=100){m='นุ่ม / โลกเดียวกัน';}
+    else if(g>=40){m='แนบ / กลมกลืน';}
+    else{m='เกือบเป็นสีเดียว';}
+    mood.textContent=m;
+
+    if(g>=40){
+      dVstat.className='stat good';
+      verdict.innerHTML='<b>ผ่าน</b> — ค่าน้ำหนักเกือบเท่ากัน ต่างกันแค่เฉด กด <b>Value Scope</b> แล้วสองช่องนี้จะกลืนเป็นเทาเดียว';
+    }else{
+      dVstat.className='stat warn';
+      verdict.innerHTML='<b>เฉดชิดเกินไป</b> — เงาแทบแยกจากแสงไม่ออก ลองหมุนสไลเดอร์ให้ห่างขึ้นเพื่อให้เงาอ่านออก';
+    }
+
+    /* highlight a preset only when both hues match it exactly */
+    presets.forEach(function(btn){
+      btn.classList.toggle('on',+btn.dataset.l===lh&&+btn.dataset.s===sh);
+    });
+  }
+  light.addEventListener('input',render);
+  hue.addEventListener('input',render);
+  presets.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      light.value=btn.dataset.l;hue.value=btn.dataset.s;render();
+    });
+  });
+  render();
+
+  /* ---- scroll reveal ---- */
+  var rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver'in window && !matchMedia('(prefers-reduced-motion:reduce)').matches){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+    },{rootMargin:'0px 0px -12% 0px'});
+    rv.forEach(function(el){io.observe(el);});
+  }else{
+    rv.forEach(function(el){el.classList.add('in');});
+  }
+})();
+</script>
+</body>
+</html>
