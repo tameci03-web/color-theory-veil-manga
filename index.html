@@ -252,6 +252,22 @@ strong{font-weight:600;color:#fff}
 .bar i{flex:1}
 .barcap{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted-2);margin-top:8px;display:block}
 
+/* theory bridge */
+.bridge{margin-top:26px;display:grid;gap:16px}
+.bridge article{border:1px solid var(--line);border-radius:10px;padding:20px 22px;background:rgba(255,255,255,.02)}
+.bridge h4{font-family:var(--sans);font-weight:600;font-size:16px;color:var(--peach);margin-bottom:6px;display:flex;align-items:baseline;gap:10px}
+.bridge h4 span{font-family:var(--serif);font-size:20px;font-weight:300;color:var(--coral);line-height:1}
+.bridge p{font-size:15px;margin:0;color:#C6BEDA;max-width:none}
+@media(min-width:720px){.bridge{grid-template-columns:1fr 1fr}}
+
+/* zones: book vs veil */
+.zones{margin-top:28px;display:flex;flex-direction:column;gap:14px}
+.zrow .zlabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px}
+.zrow .zlabel b{color:var(--sky);font-weight:500}
+.zbar{display:flex;height:54px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+.zbar i{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;min-width:0}
+.zbar i b{font-family:var(--sans);font-size:11px;font-weight:600;color:rgba(22,16,32,.74);padding:2px;line-height:1.2}
+
 /* rules */
 .rules{margin-top:26px;display:flex;flex-direction:column;gap:2px}
 .rules li{
@@ -448,7 +464,59 @@ td:first-child{font-weight:500;color:#fff}
 
   <section>
     <div class="chapter rv">
-      <div class="idx"><span class="n">02</span>กฎ</div>
+      <div class="idx"><span class="n">02</span>ทฤษฎีแสงสี</div>
+      <div class="body">
+        <h2>ทำไมหลักนี้ถึงเวิร์ก — อิงทฤษฎีแสงสี</h2>
+        <p>หลัก Veil ไม่ได้มาลอย ๆ มันคือการดึงหลักแสงสีของจริง — เรียบเรียงจากแนวคิดใน <em>Color and Light</em> ของ James Gurney — มาผลักให้สุดทางแบบสไตล์ไลซ์ สี่ข้อล่างคือสะพานเชื่อมทฤษฎีเข้ากับวิธีลงสีของ Kotteri!</p>
+
+        <div class="bridge">
+          <article>
+            <h4><span>1</span>สีของแสง กำหนดสีของเงา</h4>
+            <p>แสงมี “อุณหภูมิสี” เสมอ — แดดเย็นอุ่น หลอดทังสเตนส้ม จอมือถือฟ้า พอแสงเอียงอุ่น เงาจะถูกเติมด้วยแสงแวดล้อมฝั่งตรงข้าม จึงเอียงเย็น นี่คือกฎ “แสงอุ่น–เงาเย็น” ที่ Veil ยึดเป๊ะ</p>
+          </article>
+          <article>
+            <h4><span>2</span>เงาคือ ‘แสงที่มาเติม’ ไม่ใช่ ‘แสงที่หายไป’</h4>
+            <p>จุดที่คนพลาดมากที่สุด: เงากลางแจ้งตอนกลางวันออกฟ้า เพราะมันไม่ได้รับแดดตรง แต่รับแสงจากท้องฟ้าสีฟ้าแทน เงาจึง “เปลี่ยนแหล่งแสง” ไม่ใช่ “ลดแสง” — ตรงหัวใจ Veil ทุกประการ</p>
+          </article>
+          <article>
+            <h4><span>3</span>ทุกอย่างมีแค่สองครอบครัว</h4>
+            <p>Gurney จัดทุกพื้นผิวลงแค่สองกลุ่ม — “ครอบครัวแสง” กับ “ครอบครัวเงา” ภายในกลุ่มเดียวค่าน้ำหนักใกล้กันหมด Veil เอาแนวคิดนี้มาทำให้เด็ดขาด: ครอบครัวเงาทั้งฉากใช้เฉดเดียว</p>
+          </article>
+          <article>
+            <h4><span>4</span>ความกลมกลืนมาจากการจำกัดสี</h4>
+            <p>ภาพดูเป็นชุดเพราะจำกัดขอบเขตสีบนวงล้อ (Gurney เรียกว่า gamut) ไม่ใช่เพราะสีสวย Veil ก็คือ gamut ที่แคบสุด ๆ — เหลือสองขั้ว อุ่นกับเย็น ที่หมุนห่างกันตามอารมณ์</p>
+          </article>
+        </div>
+
+        <div class="zones">
+          <div class="zrow">
+            <span class="zlabel">ตำราแสงสีแยกทรงเป็นหลายโซน</span>
+            <div class="zbar">
+              <i style="background:#FBEAD9"><b>ไฮไลต์</b></i>
+              <i style="background:#F5D4C4"><b>แสง</b></i>
+              <i style="background:#E8C3AE"><b>ฮาล์ฟโทน</b></i>
+              <i style="background:#C89A85"><b>รอยต่อ</b></i>
+              <i style="background:#B9E4F0"><b>แสงสะท้อน</b></i>
+              <i style="background:#8FA9C9"><b>เงาตกทอด</b></i>
+            </div>
+          </div>
+          <div class="zrow">
+            <span class="zlabel">Veil ยุบเหลือ <b>สอง</b> ครอบครัว</span>
+            <div class="zbar">
+              <i style="background:#F5D4C4;flex:3"><b>แสง (อุ่น)</b></i>
+              <i style="background:#B9E4F0;flex:2"><b>เงา (เย็น)</b></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout"><p><strong>จุดที่ Veil จงใจต่างจากตำรา:</strong> งานเรียลลิสต์ใช้ทั้งค่าน้ำหนักและอุณหภูมิสีเล่าทรงพร้อมกัน แต่ Veil จงใจ “ฆ่า” ค่าน้ำหนักทิ้งเกือบหมด เหลือให้เฉดสีทำงานคนเดียว — เป็นการเลือกเชิงสไตล์ ไม่ใช่การวาดผิด</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="chapter rv">
+      <div class="idx"><span class="n">03</span>กฎ</div>
       <div class="body">
         <h2>จำแค่สองประโยค</h2>
         <ol class="rules">
@@ -467,7 +535,7 @@ td:first-child{font-weight:500;color:#fff}
 
   <section>
     <div class="chapter rv">
-      <div class="idx"><span class="n">03</span>ทำจริง</div>
+      <div class="idx"><span class="n">04</span>ทำจริง</div>
       <div class="body">
         <h2>หนึ่งเคส: แดดเย็นส่องหน้าคน</h2>
         <div class="steps">
@@ -511,7 +579,7 @@ td:first-child{font-weight:500;color:#fff}
 
   <section>
     <div class="chapter rv">
-      <div class="idx"><span class="n">04</span>ขยายฉาก</div>
+      <div class="idx"><span class="n">05</span>ขยายฉาก</div>
       <div class="body">
         <h2>วัดจากแสง ไม่ใช่จากวัตถุ</h2>
         <p>กลางคืนไม่ได้แปลว่าทุกอย่างมืดลง แต่แปลว่าแสงเปลี่ยนอุณหภูมิ และพื้นหลังเปลี่ยนค่าน้ำหนัก ตัวละครยังสว่างเท่าเดิมเสมอ</p>
@@ -527,13 +595,16 @@ td:first-child{font-weight:500;color:#fff}
           </table>
         </div>
         <div class="callout"><p><strong>ระยะห่างของเฉดสี = ความตึงของอารมณ์</strong> ห่างกัน 160° ขึ้นไปจะสั่นตาและตึงเครียด ห่างราว 100–120° จะนุ่มและอยู่ในโลกเดียวกัน เลือกตามอารมณ์ของฉาก ไม่ใช่ตามความสวยของคู่สี — ลองปรับสไลเดอร์ด้านบนดูค่านี้ได้</p></div>
+
+        <h3>พื้นหลังยิ่งไกล ยิ่งเย็นและจาง</h3>
+        <p>อีกหลักจากตำราแสงสีที่ใช้กับ Veil ได้ตรง ๆ คือ atmospheric perspective — ยิ่งวัตถุอยู่ไกล อากาศยิ่งกลืนสี ทำให้คอนทราสต์ลดลงและเฉดเลื่อนไปทางฟ้า ดังนั้นดันพื้นหลังไกลให้เย็นลงและจางลง ตัวละครที่อยู่หน้าสุดจะเด้งออกมาเองโดยไม่ต้องเพิ่มความมืดให้ตัวละครเลย</p>
       </div>
     </div>
   </section>
 
   <section>
     <div class="chapter rv">
-      <div class="idx"><span class="n">05</span>ตรวจงาน</div>
+      <div class="idx"><span class="n">06</span>ตรวจงาน</div>
       <div class="body">
         <h2>มีเครื่องมือตรวจอยู่ชิ้นเดียว</h2>
         <p>สร้าง <strong>New Correction Layer → Hue/Saturation/Luminosity</strong> ไว้บนสุด ลาก Saturation ลงไป −100 แล้วสลับซ่อน-แสดงเพื่อดูภาพขาวดำ</p>
@@ -545,7 +616,7 @@ td:first-child{font-weight:500;color:#fff}
 
   <section>
     <div class="chapter rv">
-      <div class="idx"><span class="n">06</span>แก้ปัญหา</div>
+      <div class="idx"><span class="n">07</span>แก้ปัญหา</div>
       <div class="body">
         <h2>อาการกับสาเหตุ</h2>
         <dl>
@@ -564,6 +635,10 @@ td:first-child{font-weight:500;color:#fff}
     <div class="inner">
       <p><b>หมายเหตุ</b> — Kotteri! ไม่เคยเผยแพร่ making-of ชุดแปรง ไฟล์งาน หรือให้สัมภาษณ์เรื่องเครื่องมือใด ๆ เลย แม้แต่ยังไม่เคยยืนยันว่างานเป็นดิจิทัลหรืออนาล็อก เอกสารนี้จึงเป็นการถอดวิธีคิดจากทฤษฎีสีที่ตรวจสอบได้ บวกกับการวิเคราะห์หน้างานที่ตีพิมพ์จริง ไม่ใช่กระบวนการที่ศิลปินยืนยัน</p>
       <p style="margin-top:14px">เป้าหมายคือเข้าใจตรรกะเพื่อเอาไปใช้กับสไตล์ของตัวเอง ไม่ใช่ลอกลายเส้น</p>
+      <p style="margin-top:22px"><b>อ้างอิง / อ่านต่อ</b><br>
+      · James Gurney — <em>Color and Light: A Guide for the Realist Painter</em> — หลักอุณหภูมิแสง สีของเงามาจากแสงแวดล้อม ครอบครัวแสง–เงา gamut และ atmospheric perspective<br>
+      · manga <em>Veil</em> โดย Kotteri! — ต้นทางของการสังเกตหลักลงสีนี้</p>
+      <p style="margin-top:10px;font-size:13px">แนวคิดจากหนังสือถูกสรุปและเรียบเรียงด้วยภาษาของผู้เขียนเว็บเอง ไม่ได้คัดลอกข้อความหรือภาพจากหนังสือ</p>
       <div class="sig">Veil Color Logic · คู่มือถอดตรรกะสี</div>
     </div>
   </div>
